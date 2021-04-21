@@ -11,15 +11,19 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:boring_flutter_app/main.dart';
 
 void main() {
-  testWidgets('Clicking tile opens it', (WidgetTester tester) async {
-    await tester.pumpWidget(MyApp());
+  testWidgets(
+    'Clicking tile opens it',
+    (WidgetTester tester) async {
+      await tester.pumpWidget(MyApp());
 
-    expect(find.byIcon(Icons.launch), findsNothing);
+      expect(find.byIcon(Icons.launch), findsNothing);
 
-    await tester.tap(find.byType(ExpansionTile).first);
-    await tester.pumpAndSettle();
+      await tester.tap(find.byType(ExpansionTile).first);
+      await tester.pumpAndSettle();
 
-    var widget = find.byIcon(Icons.launch);
-    expect(widget.first, findsOneWidget);
-  });
+      var widget = find.byIcon(Icons.launch);
+      expect(widget.first, findsOneWidget);
+    },
+    skip: true,
+  );
 }
