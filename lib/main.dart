@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'src/article.dart';
@@ -27,7 +29,26 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  List<Article> _articles = articles;
+  List<int> _ids = [
+    26889677,
+    26847780,
+    26887670,
+    26870666,
+    26877484,
+    26863907,
+    26877528,
+    26869877,
+    26867300,
+    26843068,
+  ]; // articles;
+
+  Future<Article> _getArticle(int id) async {
+    final storyUrl = 'https://hacker-news.firebaseio.com/v0/item/$id.json';
+    final storyRes = await http.get(storyUrl);
+    if (storyRes.statusCode == 200) {
+      return parseArticle(storyRes.body);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,17 +56,20 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: RefreshIndicator(
-        onRefresh: () async {
-          await Future.delayed(const Duration(seconds: 1));
-          setState(() {
-            _articles.removeAt(0);
-          });
-        },
-        child: ListView(
-          children: _articles.map(_buildItem).toList(),
-        ),
-      ),
+      body: ListView(
+          children: _ids
+              .map((i) => FutureBuilder<Article>(
+                    future: _getArticle(i),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<Article> snapshot) {
+                      if (snapshot.connectionState == ConnectionState.done) {
+                        return _buildItem(snapshot.data);
+                      } else {
+                        return Center(child: CircularProgressIndicator());
+                      }
+                    },
+                  ))
+              .toList()),
     );
   }
 
@@ -54,19 +78,19 @@ class _MyHomePageState extends State<MyHomePage> {
       key: Key(article.text),
       padding: const EdgeInsets.all(16.0),
       child: ExpansionTile(
-        title: Text(article.text, style: TextStyle(fontSize: 24.0)),
+        title:
+            Text(article.title ?? '[null]', style: TextStyle(fontSize: 24.0)),
         children: <Widget>[
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              Text("${article.commentsCount} comments"),
+              Text("${article.type} comments"),
               IconButton(
                 icon: Icon(Icons.launch),
                 color: Colors.green,
                 onPressed: () async {
-                  final fakeUrl = "https://${article.domain}";
-                  if (await canLaunch(fakeUrl)) {
-                    launch(fakeUrl);
+                  if (await canLaunch(article.url)) {
+                    launch(article.url);
                   }
                 },
               ),
