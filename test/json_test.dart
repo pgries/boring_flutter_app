@@ -19,19 +19,23 @@ void main() {
     expect(parseArticle(itemString).by, "dhouston");
   });
 
-  test("parses item.json over a network", () async {
-    final url = 'https://hacker-news.firebaseio.com/v0/beststories.json';
-    final res = await http.get(url);
-    if (res.statusCode == 200) {
-      final idList = parseTopStories(res.body);
-      if (idList.isNotEmpty) {
-        final storyUrl =
-            'https://hacker-news.firebaseio.com/v0/item/${idList.first}.json';
-        final storyRes = await http.get(storyUrl);
-        if (res.statusCode == 200) {
-          expect(parseArticle(storyRes.body), isNotNull);
+  test(
+    "parses item.json over a network",
+    () async {
+      final url = 'https://hacker-news.firebaseio.com/v0/beststories.json';
+      final res = await http.get(url);
+      if (res.statusCode == 200) {
+        final idList = parseTopStories(res.body);
+        if (idList.isNotEmpty) {
+          final storyUrl =
+              'https://hacker-news.firebaseio.com/v0/item/${idList.first}.json';
+          final storyRes = await http.get(storyUrl);
+          if (storyRes.statusCode == 200) {
+            expect(parseArticle(storyRes.body), isNotNull);
+          }
         }
       }
-    }
-  }, skip: true);
+    },
+    skip: true,
+  );
 }

@@ -15,6 +15,9 @@ abstract class Article implements Built<Article, ArticleBuilder> {
   @nullable
   bool get deleted;
 
+  /// This is the type of the article.
+  ///
+  /// It can be any of 'job', 'story', 'comment', 'poll', and 'pollopt'.
   String get type;
   String get by;
   int get time;
