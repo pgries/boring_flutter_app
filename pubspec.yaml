@@ -26,6 +26,7 @@ dependencies:
   meta: ^1.0.4
   built_collection: any
   built_value: any
+  rxdart: ^0.18.1
 
   flutter:
     sdk: flutter
