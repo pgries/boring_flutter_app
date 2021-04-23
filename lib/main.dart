@@ -60,7 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 1,
+        currentIndex: 0,
         items: [
           BottomNavigationBarItem(
             label: 'Top Stories',
@@ -73,9 +73,9 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
         onTap: (index) {
           if (index == 0) {
-            print('Top Stories tapped');
+            widget.bloc.storiesType.add(StoriesType.topStories);
           } else {
-            print('New Stories tapped');
+            widget.bloc.storiesType.add(StoriesType.newStories);
           }
         },
       ),
@@ -84,7 +84,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget _buildItem(Article article) {
     return Padding(
-      key: Key(article.text),
+      key: Key(article.title),
       padding: const EdgeInsets.all(16.0),
       child: ExpansionTile(
         title:
